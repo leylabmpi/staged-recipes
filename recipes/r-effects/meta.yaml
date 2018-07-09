@@ -1,0 +1,67 @@
+{% set version = '4.0-2' %}
+{% set posix = 'm2-' if win else '' %}
+{% set native = 'm2w64-' if win else '' %}
+{% set cran_mirror = 'https://cran.r-project.org' %}
+
+package:
+  name: r-effects
+  version: {{ version|replace("-", "_") }}
+
+source:
+  fn: effects_{{ version }}.tar.gz
+  url:
+    - {{ cran_mirror }}/src/contrib/effects_{{ version }}.tar.gz
+    - {{ cran_mirror }}/src/contrib/Archive/effects/effects_{{ version }}.tar.gz
+  sha256: 01ad34cbfe081175d7e5f1e84aa9dc1b9c9412d8dd19d00a4a91805d6cde5681
+
+build:
+  merge_build_host: True  # [win]
+  number: 0
+  skip: true  # [win32]
+  rpaths:
+    - lib/R/lib/
+    - lib/
+
+requirements:
+  build:
+  host:
+    - r-base
+    - r-cardata
+    - r-colorspace
+    - r-estimability
+    - r-lattice
+    - r-lme4
+    - r-nnet
+    - r-survey
+  run:
+    - r-base
+    - r-cardata
+    - r-colorspace
+    - r-estimability
+    - r-lattice
+    - r-lme4
+    - r-nnet
+    - r-survey
+
+test:
+  commands:
+    - $R -e "library('effects')"           # [not win]
+    - "\"%R%\" -e \"library('effects')\""  # [win]
+
+about:
+  home: https://www.r-project.org, https://socialsciences.mcmaster.ca/jfox/
+  license: GPL (>= 2)
+  summary: ' Graphical and tabular effect displays, e.g., of interactions, for  various statistical
+    models with linear predictors.'
+  license_family: GPL3
+  license_file: '{{ environ["PREFIX"] }}/lib/R/share/licenses/GPL-3'  # [unix]
+  license_file: '{{ environ["PREFIX"] }}\R\share\licenses\GPL-3'  # [win]
+
+extra:
+  recipe-maintainers:
+    - nick-youngblut
+    - johanneskoester
+    - bgruening
+    - daler
+    - jdblischak
+    - cbrueffer
